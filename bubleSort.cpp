@@ -1,3 +1,7 @@
+// Aluno: Guilherme Moro Guioti - 2262910
+// Link planilha google sheets: https://docs.google.com/spreadsheets/d/1iCdzzmxq3TQKLZZYLcP2yU1SEVxffPIM31FEvYhgOrc/edit?usp=sharing
+// Repositorio GitHub: https://github.com/GuilhermeGuioti/bubleSort.git
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -33,51 +37,61 @@ void readAndWriteFile(vector<string> &names){
       } else if (dentroDasAspas) {
          nomeAtual += c;
       }
-
-      if(names.size() >= 100000) break;
    }
 
    arquivo.close();
 };
 
 // Função para ordenar os nomes usando o algoritmo Bubble Sort
-void bubbleSort(vector<string> &names, long long &totalTrocas) {
+void bubbleSort(vector<string> &names, long long &totalTrocas, long long &iteracoes) {
    // A cada iteração, o maior elemento é colocado na posição correta, então o próximo loop pode ignorar os últimos elementos já ordenados
    for (size_t i = 0; i < names.size() - 1; i++) {
       for (size_t j = 0; j < names.size() - 1 - i; j++) {
+         iteracoes++; // Incrementa o contador de iterações a cada comparação realizada
          if (names[j] > names[j + 1]) {
             // Troca os nomes de posição
             swap(names[j], names[j + 1]);       
-            totalTrocas++;
+            totalTrocas++; // Incrementa o contador de trocas a cada vez que uma troca é realizada
          }
       }
    }
 };
 
 int main() {
-   vector<string> names; // Vetor para armazenar os nomes lidos do arquivo
-   long long totalTrocas = 0; // Variável para contar o número total de trocas realizadas durante a ordenação
-   
-   readAndWriteFile(names);
-   
-   cout << "===========================================" << endl;
-   cout << "Quantidade de nomes lidos: " << names.size() << endl;
-   
-   auto inicio = chrono::high_resolution_clock::now();
-   // Ordena os nomes usando o algoritmo Bubble Sort e conta o número de trocas realizadas
-   bubbleSort(names, totalTrocas);
-   auto fim = chrono::high_resolution_clock::now();
+   vector<string> todosOsNomes;
+   readAndWriteFile(todosOsNomes);
 
-   auto duracao = fim - inicio;
-   auto minutos = chrono::duration_cast<chrono::minutes>(duracao);
-   auto segundos = chrono::duration_cast<chrono::seconds>(duracao) % 60;
-   auto ms = chrono::duration_cast<chrono::milliseconds>(duracao) % 1000;;
-   
-   // Exibe o tempo de execução formatado e o número total de trocas realizadas
-   cout << "Tempo de execucao: " << setfill('0') << setw(2) << minutos.count() << ":" << setw(2) << segundos.count() << ":" << setw(2) << ms.count() << endl;
-   cout << "Trocas realizadas: " << totalTrocas << endl;
-   cout << "===========================================" << endl;
+   // Lista de quantidades de registros para testar, variando de 1.000 a 120.000 em incrementos de 10.000
+   vector<int> quantidades = {1000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 110000, 120000};
 
+   cout << left << setw(15) << "Registros" << setw(20) << "Iteracoes" << setw(20) << "Trocas" << "Tempo (s)" << endl;
+   cout << "-----------------------------------------------------------------" << endl;
+
+   for (int qtd : quantidades) {
+      // Verifica se o arquivo tem nomes suficientes para este teste
+      if (qtd > todosOsNomes.size()) break;
+
+      // Cria uma sublista com 'qtd' elementos para teste
+      vector<string> sublista(todosOsNomes.begin(), todosOsNomes.begin() + qtd);
+      long long iteracoes = 0;
+      long long trocas = 0;
+
+      // Início da medição de tempo
+      auto inicio = chrono::high_resolution_clock::now();
+      
+      // Chama a função de ordenação
+      bubbleSort(sublista, trocas, iteracoes);
+      
+      auto fim = chrono::high_resolution_clock::now();
+      chrono::duration<double> duracao = fim - inicio;
+      // Fim da medição de tempo
+
+      // Exibição formatada para facilitar a cópia para Excel/Google Sheets
+      cout << left << setw(15) << qtd 
+            << setw(20) << iteracoes 
+            << setw(20) << trocas 
+            << fixed << setprecision(4) << duracao.count() << endl;
+   }
 
    return 0;
 };
