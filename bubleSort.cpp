@@ -2,6 +2,8 @@
 // Link planilha google sheets: https://docs.google.com/spreadsheets/d/1iCdzzmxq3TQKLZZYLcP2yU1SEVxffPIM31FEvYhgOrc/edit?usp=sharing
 // Repositorio GitHub: https://github.com/GuilhermeGuioti/bubleSort.git
 
+//A Complexidade: O(n2) - Algoritmo Bubble Sort, segue a lógica onde o esforço cresce ao quadrado do número de registros.
+
 #include <iostream>
 #include <vector>
 #include <string>
